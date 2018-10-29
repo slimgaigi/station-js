@@ -6,8 +6,6 @@ class FirebaseApi {
 
   static initAuth() {
     this.app = firebase.initializeApp(firebaseConfig);
-
-    window.app = firebase;
     this.getBase();
 
     return new Promise((resolve, reject) => {
@@ -83,10 +81,6 @@ class FirebaseApi {
     return this.app.database().ref().on('value', (snap) => {
       snap.forEach(data => console.log(data.key, data.val()));
     });
-  }
-
-  static getRoom(name) {
-    return this.GetValueByKeyOnce('rooms', name);
   }
 }
 
