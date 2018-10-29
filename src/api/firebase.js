@@ -5,7 +5,11 @@ import {firebaseConfig} from '../config';
 class FirebaseApi {
 
   static initAuth() {
-    firebase.initializeApp(firebaseConfig);
+    this.app = firebase.initializeApp(firebaseConfig);
+
+    window.app = firebase;
+    this.getBase();
+
     return new Promise((resolve, reject) => {
       const unsub = firebase.auth().onAuthStateChanged(
         user => {
@@ -17,7 +21,7 @@ class FirebaseApi {
     });
   }
 
-  static createUserWithEmailAndPassword(user){
+  static createUserWithEmailAndPassword(user) {
     return firebase.auth().createUserWithEmailAndPassword(user.email, user.password);
   }
 
@@ -25,7 +29,7 @@ class FirebaseApi {
     return firebase.auth().signInWithEmailAndPassword(user.email, user.password);
   }
 
-  static authSignOut(){
+  static authSignOut() {
     return firebase.auth().signOut();
   }
 
@@ -69,6 +73,20 @@ class FirebaseApi {
       .ref(path)
       .set(value);
 
+  }
+
+  static createRoom(roomName) {
+    return this.databasePush('rooms', roomName);
+  }
+
+  static getBase() {
+    return this.app.database().ref().on('value', (snap) => {
+      snap.forEach(data => console.log(data.key, data.val()));
+    });
+  }
+
+  static getRoom(name) {
+    return this.GetValueByKeyOnce('rooms', name);
   }
 }
 
